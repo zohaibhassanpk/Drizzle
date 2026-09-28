@@ -31,7 +31,7 @@ class HourlyForecastCard extends StatelessWidget {
       width: ResponsiveConfig.width(64),
       padding: EdgeInsets.symmetric(
         horizontal: ResponsiveConfig.width(6),
-        vertical: ResponsiveConfig.height(11),
+        vertical: ResponsiveConfig.height(8),
       ),
       decoration: BoxDecoration(
         color: isNow ? null : AppColors.card,

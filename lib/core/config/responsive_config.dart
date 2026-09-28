@@ -99,6 +99,8 @@ class ResponsiveProvider extends StatelessWidget {
     this.tabletSize = const Size(834, 1194),
     this.maxWebContentWidth = 480,
     this.maxWebContentHeight = 1000,
+    this.minWebContentWidth = 320,
+    this.minWebContentHeight = 568,
     this.webBackgroundColor = const Color(0xFFF5F8FC),
     this.isDebugPrint = false,
     this.customTabletCheck,
@@ -109,6 +111,8 @@ class ResponsiveProvider extends StatelessWidget {
   final Size tabletSize;
   final double maxWebContentWidth;
   final double maxWebContentHeight;
+  final double minWebContentWidth;
+  final double minWebContentHeight;
   final Color webBackgroundColor;
   final bool isDebugPrint;
   final bool Function(Size)? customTabletCheck;
@@ -129,28 +133,37 @@ class ResponsiveProvider extends StatelessWidget {
         }
 
         final contentSize = Size(
-          math.min(constraints.maxWidth, maxWebContentWidth),
-          math.min(constraints.maxHeight, maxWebContentHeight),
+          constraints.maxWidth.clamp(minWebContentWidth, maxWebContentWidth),
+          constraints.maxHeight.clamp(minWebContentHeight, maxWebContentHeight),
         );
 
         return ColoredBox(
           color: webBackgroundColor,
-          child: Center(
-            child: SizedBox.fromSize(
-              size: contentSize,
-              child: MediaQuery(
-                data: MediaQuery.of(context).copyWith(size: contentSize),
-                child: Builder(
-                  builder: (webContext) {
-                    ResponsiveConfig._init(
-                      webContext,
-                      mobileSize: mobileSize,
-                      tabletSize: tabletSize,
-                      isDebugPrint: isDebugPrint,
-                      customTabletCheck: customTabletCheck,
-                    );
-                    return child;
-                  },
+          child: SingleChildScrollView(
+            child: SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
+              child: SizedBox(
+                width: math.max(constraints.maxWidth, contentSize.width),
+                height: math.max(constraints.maxHeight, contentSize.height),
+                child: Center(
+                  child: SizedBox.fromSize(
+                    size: contentSize,
+                    child: MediaQuery(
+                      data: MediaQuery.of(context).copyWith(size: contentSize),
+                      child: Builder(
+                        builder: (webContext) {
+                          ResponsiveConfig._init(
+                            webContext,
+                            mobileSize: mobileSize,
+                            tabletSize: tabletSize,
+                            isDebugPrint: isDebugPrint,
+                            customTabletCheck: customTabletCheck,
+                          );
+                          return child;
+                        },
+                      ),
+                    ),
+                  ),
                 ),
               ),
             ),

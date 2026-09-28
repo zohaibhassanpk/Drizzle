@@ -19,7 +19,7 @@ class WeatherDetailCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: EdgeInsets.all(ResponsiveConfig.width(10)),
+      padding: EdgeInsets.symmetric(horizontal: ResponsiveConfig.width(10)),
       decoration: BoxDecoration(
         color: AppColors.card,
         borderRadius: BorderRadius.circular(ResponsiveConfig.radius(16)),
