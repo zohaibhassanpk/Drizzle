@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Weatherly – Flutter UI Design</title>
+<style>
+:root{--bg:#eef3f9;--fg:#0f2540;--mut:#5b6b80;--card:#fff;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0d1420;--fg:#e8eef8;--mut:#93a3ba;--card:#16202f}}
+:root[data-theme="dark"]{--bg:#0d1420;--fg:#e8eef8;--mut:#93a3ba;--card:#16202f}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box;margin:0}
+body{background:var(--bg);color:var(--fg);font-family:'Inter',system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;padding:32px 16px 48px}
+h1{text-align:center;font-size:28px;letter-spacing:-.5px}
+.sub{text-align:center;color:var(--mut);margin:6px 0 32px;font-size:15px}
+.board{display:flex;flex-wrap:wrap;gap:36px;justify-content:center}
+.wrap{max-width:100%;overflow-x:auto;padding:8px}
+.lbl{text-align:center;font-weight:600;margin:14px 0 0;font-size:14px;color:var(--mut)}
+/* phone */
+.phone{width:390px;height:844px;border-radius:44px;background:#f5f8fc;color:#0f2540;position:relative;overflow:hidden;box-shadow:0 0 0 10px #101a2b,0 24px 60px rgba(16,42,80,.28);display:flex;flex-direction:column}
+.status{height:44px;display:flex;justify-content:space-between;align-items:center;padding:6px 28px 0;font-size:14px;font-weight:600;flex:none}
+.grad{background:linear-gradient(180deg,#2f80ed 0%,#56ccf2 62%,#bfe9fb 100%);color:#fff}
+.pad{padding:0 24px}
+/* splash */
+.cloud{position:absolute;background:#fff;border-radius:999px;opacity:.9}
+.cloud::before,.cloud::after{content:"";position:absolute;background:#fff;border-radius:50%}
+.c1{width:150px;height:44px;left:-30px;top:120px;opacity:.55}.c1::before{width:60px;height:60px;left:30px;top:-28px}.c1::after{width:44px;height:44px;left:78px;top:-18px}
+.c2{width:190px;height:54px;right:-40px;top:250px;opacity:.7}.c2::before{width:76px;height:76px;left:36px;top:-36px}.c2::after{width:56px;height:56px;left:110px;top:-22px}
+.c3{width:260px;height:70px;left:-50px;bottom:110px;opacity:.9}.c3::before{width:100px;height:100px;left:50px;top:-50px}.c3::after{width:76px;height:76px;left:140px;top:-32px}
+.splash{align-items:center;justify-content:center;text-align:center}
+.logo{width:132px;height:132px;position:relative;margin-bottom:28px;z-index:2}
+.sun{position:absolute;width:84px;height:84px;border-radius:50%;background:linear-gradient(135deg,#ffe27a,#ffb703);right:6px;top:6px;box-shadow:0 0 0 14px rgba(255,226,122,.28),0 0 40px rgba(255,200,60,.7)}
+.lc{position:absolute;left:0;bottom:6px;width:100px;height:38px;background:#fff;border-radius:999px;box-shadow:0 8px 20px rgba(20,70,140,.25)}
+.lc::before{content:"";position:absolute;width:48px;height:48px;background:#fff;border-radius:50%;left:16px;top:-24px}
+.lc::after{content:"";position:absolute;width:36px;height:36px;background:#fff;border-radius:50%;left:50px;top:-14px}
+.splash h2{font-size:42px;letter-spacing:-1.2px;font-weight:800;z-index:2}
+.splash p{margin-top:6px;opacity:.9;font-size:16px;z-index:2}
+/* search */
+.hero{margin:6px 0 26px}
+.badge{width:56px;height:56px;border-radius:18px;background:linear-gradient(135deg,#2f80ed,#56ccf2);display:grid;place-items:center;box-shadow:0 10px 22px rgba(47,128,237,.35);margin-bottom:20px}
+h3{font-size:32px;letter-spacing:-.8px;font-weight:800}
+.hint{color:#6b7a90;font-size:15px;margin-top:6px}
+.field{margin-top:20px}
+.field label{display:block;font-size:13px;font-weight:600;color:#42536b;margin-bottom:8px}
+.input{height:56px;border-radius:16px;background:#fff;border:1.5px solid #e1e9f3;display:flex;align-items:center;padding:0 16px;gap:12px;font-size:16px;box-shadow:0 4px 14px rgba(20,60,120,.06)}
+.input.sel{border-color:#2f80ed}
+.input .sp{flex:1}
+.input.dis{background:#eef2f7;color:#9aa8ba;box-shadow:none}
+.input .ph{color:#9aa8ba}
+.btn{height:58px;border-radius:16px;background:linear-gradient(135deg,#2f80ed,#4aa8f5);color:#fff;font-weight:700;font-size:17px;display:flex;align-items:center;justify-content:center;gap:8px;box-shadow:0 12px 24px rgba(47,128,237,.35)}
+.btn.out{background:none;color:#2f80ed;box-shadow:none;height:48px;font-size:15px;font-weight:600}
+.state{display:flex;align-items:center;gap:6px;font-size:12px;color:#7d8da3;margin-top:8px}
+/* weather */
+.top{border-radius:0 0 36px 36px;padding-bottom:20px;text-align:center;position:relative;flex:none}
+.bar{display:flex;justify-content:space-between;align-items:center;padding:8px 20px}
+.ib{width:40px;height:40px;border-radius:14px;background:rgba(255,255,255,.22);display:grid;place-items:center}
+.city{font-size:20px;font-weight:700}
+.temp{font-size:72px;font-weight:300;letter-spacing:-3px;line-height:1;margin-top:0}
+.main{font-size:22px;font-weight:700;margin-top:6px}
+.desc{opacity:.9;margin-top:2px}
+.feels{display:inline-block;margin-top:12px;padding:6px 14px;border-radius:999px;background:rgba(255,255,255,.22);font-size:13px;font-weight:600}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:14px}
+.card{background:#fff;border-radius:16px;padding:14px;box-shadow:0 6px 18px rgba(20,60,120,.08)}
+.card .ic{width:34px;height:34px;border-radius:11px;background:#e8f2ff;display:grid;place-items:center;margin-bottom:10px}
+.card small{color:#6b7a90;font-size:12px;display:block}
+.card b{font-size:20px;display:block;margin-top:2px}
+.grid .card{display:grid;grid-template-columns:34px 1fr;column-gap:12px;align-items:center;padding:12px 14px}
+.grid .card .ic{margin:0;grid-row:1/3}
+.grid .card small{align-self:end}
+.grid .card b{align-self:start}
+.grid .card b{font-size:17px;margin-top:1px;white-space:nowrap}
+.mm{display:flex;gap:12px;margin-top:12px}
+.mm .card{flex:1;padding:12px 14px}
+.mm b{font-size:18px}
+.sec{margin-top:10px;background:#fff;border-radius:16px;padding:6px 16px;box-shadow:0 6px 18px rgba(20,60,120,.08)}
+.row{display:flex;justify-content:space-between;padding:8px 0;font-size:14px;border-bottom:1px solid #edf1f6;color:#6b7a90}
+.row:last-child{border:0}.row b{color:#0f2540;font-weight:600}
+/* loading & error */
+.center{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:0 40px;margin-top:-40px}
+.spin{width:64px;height:64px;border-radius:50%;border:6px solid #dbeafe;border-top-color:#2f80ed;animation:s 1s linear infinite;margin-bottom:28px}
+@keyframes s{to{transform:rotate(360deg)}}
+@media (prefers-reduced-motion:reduce){.spin{animation:none}}
+.center h4{font-size:22px;font-weight:700}
+.center p{color:#6b7a90;margin-top:8px;font-size:15px;line-height:1.5}
+.erric{width:120px;height:120px;border-radius:50%;background:#e8f2ff;display:grid;place-items:center;margin-bottom:28px}
+.center .btn{width:100%;margin-top:32px}
+.spec{max-width:760px;margin:44px auto 0;background:var(--bg);border:1px solid rgba(120,140,170,.3);border-radius:16px;padding:20px 24px;font-size:14px;line-height:1.7;color:var(--mut)}
+.spec b{color:var(--fg)}
+
+/* forecast */
+.wi{width:30px;height:30px;flex:none}
+.fsub{font-size:13px;opacity:.92;margin-top:2px;font-weight:500}
+.st{display:flex;justify-content:space-between;align-items:baseline;font-size:16px;font-weight:700;margin:18px 0 10px}
+.st small{font-size:12px;font-weight:500;color:#6b7a90}
+.hs{display:flex;gap:10px;overflow-x:auto;scrollbar-width:none;margin:0 -24px;padding:2px 24px 10px}
+.hs::-webkit-scrollbar{display:none}
+.hc{flex:none;width:66px;background:#fff;border-radius:16px;padding:12px 0 10px;text-align:center;box-shadow:0 6px 18px rgba(20,60,120,.08);display:flex;flex-direction:column;align-items:center;gap:6px}
+.hc small{font-size:12px;color:#6b7a90}.hc b{font-size:16px}.hc .rp{font-size:11px;color:#2f80ed;font-weight:600;height:14px}
+.hc.now{background:linear-gradient(160deg,#2f80ed,#56ccf2);color:#fff}.hc.now small,.hc.now .rp{color:#fff}
+.dl{background:#fff;border-radius:16px;padding:2px 16px;box-shadow:0 6px 18px rgba(20,60,120,.08)}
+.dr{display:flex;align-items:center;gap:10px;padding:11px 0;border-bottom:1px solid #edf1f6}.dr:last-child{border:0}
+.dn{width:50px;font-weight:600;font-size:14px}
+.dp{width:36px;font-size:12px;color:#2f80ed;font-weight:600}.dp.z{color:#a3b0c2;font-weight:500}
+.tb{flex:1;position:relative;height:6px;border-radius:6px;background:#e8eef6}
+.tb i{position:absolute;top:0;bottom:0;border-radius:6px;background:linear-gradient(90deg,#56ccf2,#ffb347)}
+.lo{width:26px;text-align:right;color:#6b7a90;font-size:14px}.hi{width:26px;font-weight:700;font-size:14px}
+.fbtn{margin-top:10px;display:flex;align-items:center;gap:12px;background:#fff;border-radius:16px;padding:11px 16px;box-shadow:0 6px 18px rgba(20,60,120,.08);border:1.5px solid #cfe3ff}
+.fbtn .ic{width:34px;height:34px;border-radius:11px;background:linear-gradient(135deg,#2f80ed,#56ccf2);display:grid;place-items:center;flex:none}
+.fbtn b{flex:1;font-size:15px}.fbtn span{color:#2f80ed;font-size:22px;line-height:1}
+.tip{margin-top:14px;display:flex;gap:12px;align-items:center;background:#e8f2ff;border-radius:16px;padding:12px 14px;font-size:13px;line-height:1.4;color:#27476e}
+.tip .wi{width:34px;height:34px}
+
+/* guide */
+.nav{text-align:center;margin:-20px 0 30px;font-size:14px}.nav a{color:#2f80ed;font-weight:600;text-decoration:none;margin:0 8px}
+.guide{max-width:820px;margin:56px auto 0}.guide h2{font-size:24px;letter-spacing:-.4px}.guide h3{font-size:17px;margin:28px 0 10px}
+.guide p{color:var(--mut);font-size:14px;margin-top:4px}
+.sw{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:12px;margin-top:14px}
+.swb{background:var(--card);border:1px solid rgba(120,140,170,.3);border-radius:16px;padding:10px;text-align:left;cursor:pointer;color:var(--fg);font:inherit;display:flex;flex-direction:column;gap:2px}
+.swb i{height:56px;border-radius:10px;border:1px solid rgba(120,140,170,.25);margin-bottom:6px;display:block}
+.swb b{font-size:13px}.swb code,.gc{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:12px}.swb small{color:var(--mut);font-size:12px}
+.grd{height:64px;border-radius:16px;margin-top:12px;background:linear-gradient(180deg,#2f80ed,#56ccf2 62%,#bfe9fb);color:#fff;display:flex;align-items:center;padding:0 16px;font-size:13px;font-weight:600}
+.fr{background:var(--card);border:1px solid rgba(120,140,170,.3);border-radius:16px;padding:10px 16px;margin-top:8px;display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
+.fr span{color:var(--mut);font-size:12px}.fr div{font-family:Inter,system-ui,sans-serif}
+.gb{background:#2f80ed;color:#fff;border:0;border-radius:14px;padding:12px 20px;font:600 15px system-ui,sans-serif;cursor:pointer;margin:0 8px 8px 0}.gb.o{background:none;color:#2f80ed;border:1.5px solid #2f80ed}
+#src{display:none;width:100%;height:320px;margin-top:8px;border-radius:12px;border:1px solid rgba(120,140,170,.4);background:var(--card);color:var(--fg);font:12px ui-monospace,Menlo,Consolas,monospace;padding:12px}
+.toast{position:fixed;left:50%;bottom:calc(24px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:#0f2540;color:#fff;padding:10px 18px;border-radius:999px;font-size:14px;opacity:0;pointer-events:none;transition:opacity .2s}.toast.on{opacity:1}
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
+<symbol id="i-sun" viewBox="0 0 32 32"><circle cx="16" cy="16" r="6" fill="#ffc21a"/><path d="M16 3v3M16 26v3M3 16h3M26 16h3M6.8 6.8l2.1 2.1M23.1 23.1l2.1 2.1M6.8 25.2l2.1-2.1M23.1 8.9l2.1-2.1" stroke="#ffc21a" stroke-width="2.4" stroke-linecap="round"/></symbol>
+<symbol id="i-moon" viewBox="0 0 32 32"><path d="M20 5a11 11 0 1 0 7 19A12 12 0 0 1 20 5z" fill="#8fb4f0"/></symbol>
+<symbol id="i-cloud" viewBox="0 0 32 32"><path d="M9 25a5.5 5.5 0 0 1 .6-11A7.5 7.5 0 0 1 24 13a6 6 0 0 1 0 12z" fill="#b4c6dd"/></symbol>
+<symbol id="i-rain" viewBox="0 0 32 32"><path d="M9 20a5 5 0 0 1 .6-10A7 7 0 0 1 23 9a5.5 5.5 0 0 1 0 11z" fill="#9dc4f5"/><path d="M11 23l-1.5 4M17 23l-1.5 4M23 23l-1.5 4" stroke="#2f80ed" stroke-width="2.2" stroke-linecap="round"/></symbol>
+</defs></svg>
+<h1>Weatherly ☁️</h1>
+<p class="sub">Flutter UI design · 6 screens · 390 × 844 · Material 3</p>
+
+<p class="nav"><a href="#guide">Colors &amp; Fonts</a><a href="#code">Get HTML code</a></p>
+<div class="board">
+
+<!-- 1 SPLASH -->
+<div class="wrap"><div class="phone grad splash" style="align-items:center;justify-content:center">
+  <div class="cloud c1"></div><div class="cloud c2"></div><div class="cloud c3"></div>
+  <div class="logo"><div class="sun"></div><div class="lc"></div></div>
+  <h2>Weatherly</h2><p>Simple Weather App</p>
+</div><div class="lbl">1 · Splash</div></div>
+
+<!-- 2 SEARCH -->
+<div class="wrap"><div class="phone">
+  <div class="status"><span>9:41</span><span>●●● 100%</span></div>
+  <div class="pad" style="flex:1;display:flex;flex-direction:column;padding-top:28px">
+    <div class="hero">
+      <div class="badge"><svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="4" fill="#ffe27a" stroke="#ffe27a"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg></div>
+      <h3>Find Weather</h3><p class="hint">Select your country and city</p>
+    </div>
+    <div class="field"><label>Country</label>
+      <div class="input sel"><span style="font-size:22px">🇵🇰</span><span class="sp">Pakistan</span><span style="color:#6b7a90">▾</span></div></div>
+    <div class="field"><label>City</label>
+      <div class="input"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#2f80ed" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/></svg><span class="sp">Islamabad</span></div>
+      <div class="state">Searching in Pakistan</div></div>
+    <div class="field" style="opacity:.95"><label>Disabled state (no country yet)</label>
+      <div class="input dis"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#9aa8ba" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/></svg><span class="sp ph">Search city</span></div></div>
+    <div style="flex:1"></div>
+    <div class="btn">Get Weather</div>
+    <div class="btn out" style="margin:6px 0 30px">📍 Use Current Location</div>
+  </div>
+</div><div class="lbl">2 · Search Weather</div></div>
+
+<!-- 3 WEATHER -->
+<div class="wrap"><div class="phone">
+  <div class="grad top">
+    <div class="status" style="color:#fff"><span>9:41</span><span>●●● 100%</span></div>
+    <div class="bar"><div class="ib">‹</div><div class="city">Islamabad, Pakistan</div><div class="ib">↻</div></div>
+    <svg width="72" height="72" viewBox="0 0 96 96" style="margin-top:0"><circle cx="48" cy="48" r="34" fill="rgba(255,255,255,.15)"/><path d="M60 22a26 26 0 1 0 14 46A28 28 0 0 1 60 22z" fill="#fff3c4"/><circle cx="72" cy="24" r="2.5" fill="#fff"/><circle cx="24" cy="26" r="2" fill="#fff"/></svg>
+    <div class="temp">25°C</div>
+    <div class="main">Clear</div><div class="desc">Clear sky</div>
+    <div class="feels">Feels like 26°C</div>
+  </div>
+  <div class="pad" style="overflow:hidden;flex:1;padding-top:6px;padding-bottom:16px">
+    <div class="grid">
+      <div class="card"><div class="ic"><svg width="18" height="18" viewBox="0 0 24 24" fill="#2f80ed"><path d="M12 2C9 7 6 10 6 14a6 6 0 0 0 12 0c0-4-3-7-6-12z"/></svg></div><small>Humidity</small><b>73%</b></div>
+      <div class="card"><div class="ic"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#2f80ed" stroke-width="2" stroke-linecap="round"><path d="M3 8h11a3 3 0 1 0-3-3M3 12h16a3 3 0 1 1-3 3M3 16h8"/></svg></div><small>Wind Speed</small><b>2.02 m/s</b></div>
+      <div class="card"><div class="ic"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#2f80ed" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 12l4-4"/></svg></div><small>Pressure</small><b>1009 hPa</b></div>
+      <div class="card"><div class="ic"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#2f80ed" stroke-width="2"><path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg></div><small>Visibility</small><b>10 km</b></div>
+    </div>
+    <div class="mm">
+      <div class="card"><small>Minimum Temperature</small><b>25°C</b></div>
+      <div class="card"><small>Maximum Temperature</small><b>25°C</b></div>
+    </div>
+    <div class="sec">
+      <div class="row"><span>Cloudiness</span><b>4%</b></div>
+      <div class="row"><span>Wind Direction</span><b>45°</b></div>
+      <div class="row"><span>Sunrise</span><b>5:56 AM</b></div>
+      <div class="row"><span>Sunset</span><b>6:02 PM</b></div>
+    </div>
+    <div class="fbtn"><div class="ic"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round"><rect x="3" y="5" width="18" height="16" rx="3"/><path d="M3 10h18M8 3v4M16 3v4"/></svg></div><b>5-Day Forecast</b><span>›</span></div>
+  </div>
+</div><div class="lbl">3 · Current Weather</div></div>
+
+<!-- 4 LOADING -->
+<div class="wrap"><div class="phone">
+  <div class="status"><span>9:41</span><span>●●● 100%</span></div>
+  <div class="center"><div class="spin"></div><h4>Getting weather...</h4><p>Please wait</p></div>
+</div><div class="lbl">4 · Loading</div></div>
+
+<!-- 5 ERROR -->
+<div class="wrap"><div class="phone">
+  <div class="status"><span>9:41</span><span>●●● 100%</span></div>
+  <div class="center">
+    <div class="erric"><svg width="64" height="64" viewBox="0 0 64 64"><path d="M18 46a12 12 0 0 1 2-23.8A15 15 0 0 1 49 26a10 10 0 0 1-1 20z" fill="#9dc4f5"/><text x="32" y="42" text-anchor="middle" font-size="22" font-weight="800" fill="#fff" font-family="sans-serif">?</text></svg></div>
+    <h4>City not found</h4><p>Please check the city and country and try again.</p>
+    <div class="btn">Try Again</div>
+  </div>
+</div><div class="lbl">5 · Error / City Not Found</div></div>
+
+<!-- 6 FORECAST -->
+<div class="wrap"><div class="phone">
+  <div class="grad top" style="padding-bottom:18px">
+    <div class="status" style="color:#fff"><span>9:41</span><span>●●● 100%</span></div>
+    <div class="bar"><div class="ib">‹</div><div class="city">Islamabad, Pakistan</div><div class="ib">↻</div></div>
+    <div class="fsub">5-Day Forecast · Thu, 24 Sep</div>
+  </div>
+  <div class="pad" style="flex:1;overflow:hidden">
+    <div class="st">Next 24 hours<small>Every 3 hours</small></div>
+    <div class="hs"><div class="hc now"><small>Now</small><svg class="wi"><use href="#i-sun"/></svg><b>32°</b><span class="rp"></span></div><div class="hc"><small>5 PM</small><svg class="wi"><use href="#i-sun"/></svg><b>32°</b><span class="rp"></span></div><div class="hc"><small>8 PM</small><svg class="wi"><use href="#i-moon"/></svg><b>28°</b><span class="rp"></span></div><div class="hc"><small>11 PM</small><svg class="wi"><use href="#i-moon"/></svg><b>27°</b><span class="rp"></span></div><div class="hc"><small>2 AM</small><svg class="wi"><use href="#i-moon"/></svg><b>25°</b><span class="rp">9%</span></div><div class="hc"><small>5 AM</small><svg class="wi"><use href="#i-rain"/></svg><b>24°</b><span class="rp">21%</span></div><div class="hc"><small>8 AM</small><svg class="wi"><use href="#i-rain"/></svg><b>25°</b><span class="rp">100%</span></div><div class="hc"><small>11 AM</small><svg class="wi"><use href="#i-rain"/></svg><b>31°</b><span class="rp">100%</span></div></div>
+    <div class="st" style="margin-top:8px">5-Day Forecast<small>Low · High</small></div>
+    <div class="dl"><div class="dr"><span class="dn">Today</span><svg class="wi"><use href="#i-sun"/></svg><span class="dp z">💧 0%</span><span class="lo">27°</span><div class="tb"><i style="left:47%;width:33%"></i></div><span class="hi">32°</span></div><div class="dr"><span class="dn">Fri</span><svg class="wi"><use href="#i-rain"/></svg><span class="dp">💧 100%</span><span class="lo">24°</span><div class="tb"><i style="left:27%;width:60%"></i></div><span class="hi">33°</span></div><div class="dr"><span class="dn">Sat</span><svg class="wi"><use href="#i-sun"/></svg><span class="dp z">💧 0%</span><span class="lo">23°</span><div class="tb"><i style="left:20%;width:73%"></i></div><span class="hi">34°</span></div><div class="dr"><span class="dn">Sun</span><svg class="wi"><use href="#i-rain"/></svg><span class="dp">💧 24%</span><span class="lo">24°</span><div class="tb"><i style="left:27%;width:53%"></i></div><span class="hi">32°</span></div><div class="dr"><span class="dn">Mon</span><svg class="wi"><use href="#i-cloud"/></svg><span class="dp">💧 14%</span><span class="lo">21°</span><div class="tb"><i style="left:7%;width:53%"></i></div><span class="hi">29°</span></div></div>
+    <div class="tip"><svg class="wi"><use href="#i-rain"/></svg><span>Rain likely Friday morning (100%). Carry an umbrella if you head out early.</span></div>
+  </div>
+</div><div class="lbl">6 · Forecast</div></div>
+
+</div>
+
+<section class="guide" id="guide">
+<h2>Colors &amp; Fonts</h2><p>Tap any color to copy its hex code.</p>
+<div class="sw" id="sw"></div>
+<div class="grd">Main gradient: #2F80ED → #56CCF2 → #BFE9FB (top to bottom)</div>
+<h3>Font: Inter</h3><p>In Flutter use the google_fonts package: GoogleFonts.inter()</p>
+<div id="fonts"></div>
+<h3 id="code">Get the HTML code</h3>
+<p>This copies the full code of this page: all 6 screens plus this guide.</p>
+<div style="margin-top:12px"><button class="gb" id="cp">Copy HTML code</button><button class="gb o" id="sh">Show code</button></div>
+<textarea id="src" readonly></textarea>
+</section>
+<div class="toast" id="t"></div>
+<script>
+const C=[["Primary blue","#2F80ED","Buttons, links, icons"],["Sky blue","#56CCF2","Gradients"],["Light sky","#BFE9FB","Gradient bottom"],["Button end","#4AA8F5","Button gradient"],["Background","#F5F8FC","Screen background"],["Card","#FFFFFF","Cards, fields"],["Main text","#0F2540","Headings, values"],["Secondary text","#6B7A90","Labels, hints"],["Field border","#E1E9F3","Input outline"],["Disabled bg","#EEF2F7","Disabled field"],["Disabled text","#9AA8BA","Placeholder"],["Divider","#EDF1F6","Row lines"],["Light tint","#E8F2FF","Icon boxes, tip"],["Sun yellow","#FFC21A","Sun icon"],["Moon blue","#8FB4F0","Moon icon"],["Warm orange","#FFB347","Temp bar high"]];
+const F=[["Weatherly",42,800,"Splash app name"],["Find Weather",32,800,"Screen title"],["25°C",72,300,"Big temperature"],["Islamabad, Pakistan",20,700,"City name"],["Clear",22,700,"Condition"],["73%",18,700,"Card value"],["Get Weather",17,700,"Button"],["Humidity",12,500,"Small label"]];
+const $=id=>document.getElementById(id);
+function toast(m){const t=$('t');t.textContent=m;t.classList.add('on');setTimeout(()=>t.classList.remove('on'),1600)}
+async function copy(x,m){try{await navigator.clipboard.writeText(x);toast(m)}catch(e){const a=document.createElement('textarea');a.value=x;document.body.appendChild(a);a.select();try{document.execCommand('copy');toast(m)}catch(_){toast('Select and copy manually')}a.remove()}}
+$('sw').innerHTML=C.map(([n,h,u])=>'<button class="swb" data-h="'+h+'"><i style="background:'+h+'"></i><b>'+n+'</b><code>'+h+'</code><code>Color(0xFF'+h.slice(1)+')</code><small>'+u+'</small></button>').join('');
+$('sw').onclick=e=>{const b=e.target.closest('.swb');if(b)copy(b.dataset.h,'Copied '+b.dataset.h)};
+$('fonts').innerHTML=F.map(([t,z,w,u])=>'<div class="fr"><div style="font-size:'+z+'px;font-weight:'+w+';line-height:1.1">'+t+'</div><span>'+u+' · size '+z+' · weight '+w+'</span></div>').join('');
+const src=()=>'<!DOCTYPE html>\n'+document.documentElement.outerHTML;
+$('cp').onclick=()=>copy(src(),'HTML code copied');
+$('sh').onclick=()=>{const a=$('src');if(a.style.display==='block'){a.style.display='none';$('sh').textContent='Show code'}else{a.value=src();a.style.display='block';a.select();$('sh').textContent='Hide code'}};
+</script>
+<div class="spec">
+<b>Flutter build notes.</b> Colors: primary <b>#2F80ED</b>, sky <b>#56CCF2</b>, background <b>#F5F8FC</b>, cards white with radius 16 and soft shadow. Use <b>Scaffold → Column</b> per screen, <b>DropdownButtonFormField</b> (searchable) for country, <b>TextFormField</b> with <b>enabled: country != null</b> for city, <b>GridView.count(crossAxisCount: 2)</b> for the four cards, <b>Image.network</b> for the OpenWeather icon (the moon here stands in for <b>01n</b>). <b>Navigation:</b> the “5-Day Forecast ›” card on screen 3 runs <b>Navigator.push</b> to screen 6 (fetch on tap); the ‹ button pops back. <b>Forecast:</b> call <b>/forecast?q=Islamabad,PK&amp;units=metric</b> (40 entries, every 3 h). Show the next 8 entries as hourly chips, and group the rest by local day using (dt + timezone). Daily low/high = min/max of <b>main.temp</b>, rain % = max <b>pop</b> between 8 AM and 8 PM, icon = worst daytime condition. Visibility = meters ÷ 1000; sunrise/sunset = (unix + timezone) as UTC time. Request: <b>q=Islamabad,PK</b>.
+</div>
+</body>
+</html>
