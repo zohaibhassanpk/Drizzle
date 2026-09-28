@@ -1,0 +1,10 @@
+#!/bin/sh
+set -eu
+
+: "${OPENWEATHER_API_KEY:?Set OPENWEATHER_API_KEY in Vercel project environment variables}"
+
+git clone --depth 1 --branch stable https://github.com/flutter/flutter.git /tmp/flutter
+/tmp/flutter/bin/flutter config --enable-web
+printf 'OPENWEATHER_API_KEY=%s\n' "$OPENWEATHER_API_KEY" > .env
+/tmp/flutter/bin/flutter pub get
+/tmp/flutter/bin/flutter build web --release
